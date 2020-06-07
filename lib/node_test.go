@@ -15,9 +15,10 @@ func TestCreateNode(t *testing.T) {
 		Label    string
 		Input    input
 		Expected *Node
-		Error    bool
+		IsError  bool
 	}{
-		{Label: "SUCCESS: normal",
+		{
+			Label: "SUCCESS: normal",
 			Input: input{
 				ID:   1,
 				Name: "a",
@@ -26,16 +27,19 @@ func TestCreateNode(t *testing.T) {
 				ID:   1,
 				Name: "a",
 			},
-			Error: false},
-		{Label: "FAIL: name is blank",
+			IsError: false,
+		},
+		{
+			Label:    "FAIL: name is blank",
 			Input:    input{ID: 2, Name: ""},
 			Expected: nil,
-			Error:    true},
+			IsError:  true,
+		},
 	}
 
 	for _, test := range tests {
 		got, err := CreateNode(test.Input.ID, test.Input.Name)
-		if test.Error {
+		if test.IsError {
 			assert.Error(t, err, test.Label)
 			return
 		}

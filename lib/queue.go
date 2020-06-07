@@ -16,23 +16,24 @@ func (q *Queue) Len() int {
 	return len(q.Nodes)
 }
 
-func (q *Queue) Print() {
+func (q *Queue) Sprint() string {
+	result := ""
 	for _, n := range q.Nodes {
-		fmt.Printf("%v", n)
+		result += fmt.Sprintf("{%d: %s} ", n.ID, n.Name)
 	}
-	fmt.Printf("\n")
+	return result
 }
 
 func (q *Queue) Enqueue(node *Node) {
 	q.Nodes = append(q.Nodes, node)
 }
 
-func (q *Queue) Dequeue() *Node {
+func (q *Queue) Dequeue() (*Node, error) {
 	if q.Len() == 0 {
-		return nil
+		return nil, fmt.Errorf("faild to dequeue")
 	}
 
 	node := q.Nodes[0]
 	q.Nodes = q.Nodes[1:]
-	return node
+	return node, nil
 }
