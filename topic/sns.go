@@ -18,21 +18,42 @@ func CmdSns() {
 		return
 	}
 
-	fmt.Println("Input start name")
+	fmt.Println("Select mode with SNS")
+	fmt.Println("1. Breadth First Search")
+	fmt.Println("2. Find Farthermost")
 	fmt.Printf("> ")
-	startName := lib.ReadLine()
+	input := lib.ReadLine()
 
-	fmt.Println("Input target name")
-	fmt.Printf("> ")
-	targetName := lib.ReadLine()
+	switch input {
+	case "1":
+		fmt.Println("Input start name")
+		fmt.Printf("> ")
+		startName := lib.ReadLine()
 
-	target, depth, err := sns.BreadthFirstSearch(startName, targetName)
-	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Input target name")
+		fmt.Printf("> ")
+		targetName := lib.ReadLine()
+
+		target, depth, err := sns.BreadthFirstSearch(startName, targetName)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("target: {%d: %s}, depth: %d\n", target.ID, target.Name, depth)
 		return
+	case "2":
+		from, to, depth, err := sns.FindFarthermost()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Printf("from: {%d: %s}, to: {%d, %s}, depth: %d\n", from.ID, from.Name, to.ID, to.Name, depth)
+		return
+	default:
+		fmt.Println("Invalid input")
 	}
 
-	fmt.Printf("target: {%d: %s}, depth: %d\n", target.ID, target.Name, depth)
 }
 
 func InitSns() (*Sns, error) {
@@ -73,4 +94,30 @@ func InitSns() (*Sns, error) {
 
 func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
+}
+
+func (s *Sns) FindFarthermost() (from *lib.Node, to *lib.Node, depth int, err error) {
+	maxDepth := 0
+	var maxFrom *lib.Node
+	var maxTo *lib.Node
+
+	for _, from := range s.Graph.Nodes {
+		for _, to := range s.Graph.Nodes {
+			if from.ID == to.ID {
+				continue
+			}
+
+			_, depth, err := search.BreadthFirstSearch(s.Graph, from.Name, to.Name)
+			if err != nil {
+				return nil, nil, 0, err
+			}
+			if depth > maxDepth {
+				maxDepth = depth
+				maxFrom = from
+				maxTo = to
+			}
+		}
+	}
+
+	return maxFrom, maxTo, maxDepth, nil
 }
