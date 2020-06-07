@@ -7,7 +7,9 @@ type Graph struct {
 }
 
 func InitGraph() *Graph {
-	return &Graph{}
+	return &Graph{
+		Nodes: map[int]*Node{},
+	}
 }
 
 func (g *Graph) FindNodeByID(id int) *Node {

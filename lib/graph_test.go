@@ -12,8 +12,10 @@ func TestInitGraph(t *testing.T) {
 		Expected *Graph
 	}{
 		{
-			Label:    "SUCCESS: normal",
-			Expected: &Graph{},
+			Label: "SUCCESS: normal",
+			Expected: &Graph{
+				Nodes: map[int]*Node{},
+			},
 		},
 	}
 
