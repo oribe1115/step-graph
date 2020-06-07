@@ -25,7 +25,7 @@ func TestInitGraph(t *testing.T) {
 	}
 }
 
-func TestGraphFindNode(t *testing.T) {
+func TestGraphFindNodeByID(t *testing.T) {
 	tests := []struct {
 		Label    string
 		Use      *Graph
@@ -36,12 +36,12 @@ func TestGraphFindNode(t *testing.T) {
 			Label: "SUCCESS: normal",
 			Use: &Graph{
 				Nodes: map[int]*Node{
-					1: &Node{
+					1: {
 						ID:    1,
 						Name:  "a",
 						Links: []*Node{},
 					},
-					2: &Node{
+					2: {
 						ID:    2,
 						Name:  "b",
 						Links: []*Node{},
@@ -59,12 +59,12 @@ func TestGraphFindNode(t *testing.T) {
 			Label: "FAIL: not found",
 			Use: &Graph{
 				Nodes: map[int]*Node{
-					1: &Node{
+					1: {
 						ID:    1,
 						Name:  "a",
 						Links: []*Node{},
 					},
-					2: &Node{
+					2: {
 						ID:    2,
 						Name:  "b",
 						Links: []*Node{},
@@ -77,7 +77,66 @@ func TestGraphFindNode(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Label, func(t *testing.T) {
-			got := test.Use.FindNode(test.Input)
+			got := test.Use.FindNodeByID(test.Input)
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}
+
+func TestFindNodeByName(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Use      *Graph
+		Input    string
+		Expected *Node
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Use: &Graph{
+				Nodes: map[int]*Node{
+					1: {
+						ID:    1,
+						Name:  "a",
+						Links: []*Node{},
+					},
+					2: {
+						ID:    2,
+						Name:  "b",
+						Links: []*Node{},
+					},
+				},
+			},
+			Input: "a",
+			Expected: &Node{
+				ID:    1,
+				Name:  "a",
+				Links: []*Node{},
+			},
+		},
+		{
+			Label: "FAIL: not found",
+			Use: &Graph{
+				Nodes: map[int]*Node{
+					1: {
+						ID:    1,
+						Name:  "a",
+						Links: []*Node{},
+					},
+					2: {
+						ID:    2,
+						Name:  "b",
+						Links: []*Node{},
+					},
+				},
+			},
+			Input:    "c",
+			Expected: nil,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.FindNodeByName(test.Input)
 			assert.Equal(t, test.Expected, got)
 		})
 	}
