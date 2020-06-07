@@ -48,3 +48,75 @@ func TestCreateNode(t *testing.T) {
 		assert.Equal(t, test.Expected, got, test.Label)
 	}
 }
+
+func TestNodeLinkTo(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Use      *Node
+		Input    *Node
+		Expected *Node
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Use: &Node{
+				ID:   1,
+				Name: "a",
+				Links: []*Node{
+					{
+						2,
+						"b",
+						[]*Node{},
+					},
+					{
+						3,
+						"c",
+						[]*Node{
+							{
+								2,
+								"b",
+								[]*Node{},
+							},
+						},
+					},
+				},
+			},
+			Input: &Node{
+				4,
+				"d",
+				[]*Node{},
+			},
+			Expected: &Node{
+				ID:   1,
+				Name: "a",
+				Links: []*Node{
+					{
+						2,
+						"b",
+						[]*Node{},
+					},
+					{
+						3,
+						"c",
+						[]*Node{
+							{
+								2,
+								"b",
+								[]*Node{},
+							},
+						},
+					},
+					{
+						4,
+						"d",
+						[]*Node{},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test.Use.LinkTo(test.Input)
+		assert.Equal(t, test.Expected, test.Use, test.Label)
+	}
+}

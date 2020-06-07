@@ -17,3 +17,7 @@ func CreateNode(id int, name string) (*Node, error) {
 		Name: name,
 	}, nil
 }
+
+func (n *Node) LinkTo(to *Node) {
+	n.Links = append(n.Links, to)
+}
