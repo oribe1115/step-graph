@@ -12,8 +12,10 @@ func TestInitSearchRecord(t *testing.T) {
 		Expected *SearchRecord
 	}{
 		{
-			Label:    "SUCCESS: normal",
-			Expected: &SearchRecord{},
+			Label: "SUCCESS: normal",
+			Expected: &SearchRecord{
+				Records: map[int]*Record{},
+			},
 		},
 	}
 
@@ -52,6 +54,14 @@ func TestSearchRecordIsRecorded(t *testing.T) {
 				},
 			},
 			Input:    3,
+			Expected: false,
+		},
+		{
+			Label: "SUCCESS: no rocord",
+			Use: &SearchRecord{
+				Records: map[int]*Record{},
+			},
+			Input:    2,
 			Expected: false,
 		},
 	}

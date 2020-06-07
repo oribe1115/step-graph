@@ -12,7 +12,9 @@ type SearchRecord struct {
 }
 
 func InitSearchRecord() *SearchRecord {
-	return &SearchRecord{}
+	return &SearchRecord{
+		Records: map[int]*Record{},
+	}
 }
 
 func (s *SearchRecord) IsRecorded(id int) bool {
