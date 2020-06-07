@@ -20,8 +20,10 @@ func TestInitQueue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := InitQueue()
-		assert.Equal(t, test.Expected, got, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			got := InitQueue()
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -59,8 +61,10 @@ func TestQueueLen(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := test.Use.Len()
-		assert.Equal(t, test.Expected, got, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.Len()
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -98,8 +102,10 @@ func TestQueueSprint(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := test.Use.Sprint()
-		assert.Equal(t, test.Expected, got, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.Sprint()
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -174,8 +180,10 @@ func TestQueueEnqueue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test.Use.Enqueue(test.Input)
-		assert.Equal(t, test.Expected, test.Use, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			test.Use.Enqueue(test.Input)
+			assert.Equal(t, test.Expected, test.Use)
+		})
 	}
 }
 
@@ -254,14 +262,16 @@ func TestQueueDequeue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got, err := test.Use.Dequeue()
-		if test.IsError {
-			assert.Error(t, err, test.Label)
-			return
-		}
+		t.Run(test.Label, func(t *testing.T) {
+			got, err := test.Use.Dequeue()
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
 
-		assert.NoError(t, err, test.Label)
-		assert.Equal(t, test.ExpectedGot, got)
-		assert.Equal(t, test.ExpectedAfter, test.Use)
+			assert.NoError(t, err)
+			assert.Equal(t, test.ExpectedGot, got)
+			assert.Equal(t, test.ExpectedAfter, test.Use)
+		})
 	}
 }

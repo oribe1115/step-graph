@@ -38,14 +38,16 @@ func TestCreateNode(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got, err := CreateNode(test.Input.ID, test.Input.Name)
-		if test.IsError {
-			assert.Error(t, err, test.Label)
-			return
-		}
+		t.Run(test.Label, func(t *testing.T) {
+			got, err := CreateNode(test.Input.ID, test.Input.Name)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
 
-		assert.NoError(t, err, test.Label)
-		assert.Equal(t, test.Expected, got, test.Label)
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -116,7 +118,9 @@ func TestNodeLinkTo(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test.Use.LinkTo(test.Input)
-		assert.Equal(t, test.Expected, test.Use, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			test.Use.LinkTo(test.Input)
+			assert.Equal(t, test.Expected, test.Use)
+		})
 	}
 }

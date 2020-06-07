@@ -18,8 +18,10 @@ func TestInitGraph(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := InitGraph()
-		assert.Equal(t, test.Expected, got, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			got := InitGraph()
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -74,8 +76,10 @@ func TestGraphFindNode(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := test.Use.FindNode(test.Input)
-		assert.Equal(t, test.Expected, got, test.Label)
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.FindNode(test.Input)
+			assert.Equal(t, test.Expected, got)
+		})
 	}
 }
 
@@ -156,14 +160,16 @@ func TestGraphSetNode(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := test.Use.SetNode(test.Input)
-		if test.IsError {
-			assert.Error(t, err, test.Label)
-			return
-		}
+		t.Run(test.Label, func(t *testing.T) {
+			err := test.Use.SetNode(test.Input)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
 
-		assert.NoError(t, err, test.Label)
-		assert.Equal(t, test.Expected, test.Use, test.Label)
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, test.Use)
+		})
 	}
 }
 
@@ -271,13 +277,15 @@ func TestGraphLinkNodes(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := test.Use.LinkNodes(test.Input.fromID, test.Input.toID)
-		if test.IsError {
-			assert.Error(t, err, test.Label)
-			return
-		}
+		t.Run(test.Label, func(t *testing.T) {
+			err := test.Use.LinkNodes(test.Input.fromID, test.Input.toID)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
 
-		assert.NoError(t, err, test.Label)
-		assert.Equal(t, test.Expected, test.Use, test.Label)
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, test.Use)
+		})
 	}
 }
