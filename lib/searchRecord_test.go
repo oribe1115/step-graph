@@ -38,8 +38,22 @@ func TestSearchRecordIsRecorded(t *testing.T) {
 			Label: "SUCCESS: found",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+					},
 				},
 			},
 			Input:    1,
@@ -49,8 +63,24 @@ func TestSearchRecordIsRecorded(t *testing.T) {
 			Label: "SUCCESS: not found",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From:  nil,
+					},
 				},
 			},
 			Input:    3,
@@ -76,57 +106,123 @@ func TestSearchRecordIsRecorded(t *testing.T) {
 
 func TestAddRecord(t *testing.T) {
 	type input struct {
-		ID    int
-		Count int
+		node  *Node
+		count int
+		from  *Node
 	}
 	tests := []struct {
 		Label    string
 		Use      *SearchRecord
 		Input    input
 		Expected *SearchRecord
-		IsError  bool
 	}{
 		{
 			Label: "SUCCESS: normal",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
 				},
 			},
-			Input: input{ID: 3, Count: 3},
+			Input: input{
+				node: &Node{
+					ID:    2,
+					Name:  "b",
+					Links: []*Node{},
+				},
+				count: 2,
+				from: &Node{
+					ID:    1,
+					Name:  "a",
+					Links: []*Node{},
+				},
+			},
 			Expected: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
-					3: {ID: 3, Count: 3},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+					},
 				},
 			},
-			IsError: false,
 		},
 		{
-			Label: "FAIL: deplicate id",
+			Label: "SUCCESS: from is nil",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
 				},
 			},
-			Input:    input{ID: 1, Count: 3},
-			Expected: nil,
-			IsError:  true,
+			Input: input{
+				node: &Node{
+					ID:    2,
+					Name:  "b",
+					Links: []*Node{},
+				},
+				count: 2,
+				from:  nil,
+			},
+			Expected: &SearchRecord{
+				Records: map[int]*Record{
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From:  nil,
+					},
+				},
+			},
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Label, func(t *testing.T) {
-			err := test.Use.AddRecord(test.Input.ID, test.Input.Count)
-			if test.IsError {
-				assert.Error(t, err)
-				return
-			}
-
-			assert.NoError(t, err)
+			test.Use.AddRecord(test.Input.node, test.Input.count, test.Input.from)
 			assert.Equal(t, test.Expected, test.Use)
 		})
 	}
@@ -143,22 +239,41 @@ func TestGetRecord(t *testing.T) {
 			Label: "SUCCESS: normal",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
 				},
 			},
 			Input: 1,
 			Expected: &Record{
-				ID:    1,
+				Node: &Node{
+					ID:    1,
+					Name:  "a",
+					Links: []*Node{},
+				},
 				Count: 1,
+				From:  nil,
 			},
 		},
 		{
 			Label: "FAIL: not found",
 			Use: &SearchRecord{
 				Records: map[int]*Record{
-					1: {ID: 1, Count: 1},
-					2: {ID: 2, Count: 2},
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
 				},
 			},
 			Input:    3,

@@ -15,7 +15,7 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 		return nil, 0, fmt.Errorf("faild to found startNode. startName=%s", startName)
 	}
 
-	searchRecord.AddRecord(startNode.ID, 0)
+	searchRecord.AddRecord(startNode, 0, nil)
 	queue.Enqueue(startNode)
 
 	for queue.Len() != 0 {
@@ -36,7 +36,7 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 			}
 
 			queue.Enqueue(node)
-			searchRecord.AddRecord(node.ID, nowRecord.Count+1)
+			searchRecord.AddRecord(node, nowRecord.Count+1, now)
 		}
 	}
 
