@@ -7,64 +7,64 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var inputGraph = &lib.Graph{
+	Nodes: map[int]*lib.Node{
+		1: {
+			ID:   1,
+			Name: "a",
+			Links: []*lib.Node{
+				{
+					ID:   2,
+					Name: "b",
+					Links: []*lib.Node{
+						{
+							ID:    3,
+							Name:  "c",
+							Links: []*lib.Node{},
+						},
+						{
+							ID:    4,
+							Name:  "d",
+							Links: []*lib.Node{},
+						},
+					},
+				},
+			},
+		},
+		2: {
+			ID:   2,
+			Name: "b",
+			Links: []*lib.Node{
+				{
+					ID:    3,
+					Name:  "c",
+					Links: []*lib.Node{},
+				},
+				{
+					ID:    4,
+					Name:  "d",
+					Links: []*lib.Node{},
+				},
+			},
+		},
+		3: {
+			ID:    3,
+			Name:  "c",
+			Links: []*lib.Node{},
+		},
+		4: {
+			ID:    4,
+			Name:  "d",
+			Links: []*lib.Node{},
+		},
+	},
+}
+
 func TestBreadthFirstSearch(t *testing.T) {
 	type input struct {
 		graph      *lib.Graph
 		startName  string
 		targetName string
-	}
-
-	inputGraph := &lib.Graph{
-		Nodes: map[int]*lib.Node{
-			1: {
-				ID:   1,
-				Name: "a",
-				Links: []*lib.Node{
-					{
-						ID:   2,
-						Name: "b",
-						Links: []*lib.Node{
-							{
-								ID:    3,
-								Name:  "c",
-								Links: []*lib.Node{},
-							},
-							{
-								ID:    4,
-								Name:  "d",
-								Links: []*lib.Node{},
-							},
-						},
-					},
-				},
-			},
-			2: {
-				ID:   2,
-				Name: "b",
-				Links: []*lib.Node{
-					{
-						ID:    3,
-						Name:  "c",
-						Links: []*lib.Node{},
-					},
-					{
-						ID:    4,
-						Name:  "d",
-						Links: []*lib.Node{},
-					},
-				},
-			},
-			3: {
-				ID:    3,
-				Name:  "c",
-				Links: []*lib.Node{},
-			},
-			4: {
-				ID:    4,
-				Name:  "d",
-				Links: []*lib.Node{},
-			},
-		},
 	}
 
 	tests := []struct {
@@ -172,6 +172,101 @@ func TestBreadthFirstSearch(t *testing.T) {
 			assert.Equal(t, test.ExpectedTraget, target)
 			assert.Equal(t, test.ExpectedDepth, depth)
 			assert.Equal(t, test.ExpectedRoute, route)
+		})
+	}
+}
+
+func TestFindFarthermostNodeByBreadthFirstSearch(t *testing.T) {
+	type input struct {
+		graph     *lib.Graph
+		startName string
+	}
+	type expected struct {
+		end   *lib.Node
+		depth int
+		route []*lib.Node
+	}
+
+	tests := []struct {
+		Label    string
+		Input    input
+		Expected expected
+		IsError  bool
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Input: input{
+				graph:     inputGraph,
+				startName: "a",
+			},
+			Expected: expected{
+				end: &lib.Node{
+					ID:    4,
+					Name:  "d",
+					Links: []*lib.Node{},
+				},
+				depth: 2,
+				route: []*lib.Node{
+					{
+						ID:   1,
+						Name: "a",
+						Links: []*lib.Node{
+							{
+								ID:   2,
+								Name: "b",
+								Links: []*lib.Node{
+									{
+										ID:    3,
+										Name:  "c",
+										Links: []*lib.Node{},
+									},
+									{
+										ID:    4,
+										Name:  "d",
+										Links: []*lib.Node{},
+									},
+								},
+							},
+						},
+					},
+					{
+						ID:   2,
+						Name: "b",
+						Links: []*lib.Node{
+							{
+								ID:    3,
+								Name:  "c",
+								Links: []*lib.Node{},
+							},
+							{
+								ID:    4,
+								Name:  "d",
+								Links: []*lib.Node{},
+							},
+						},
+					},
+					{
+						ID:    4,
+						Name:  "d",
+						Links: []*lib.Node{},
+					},
+				},
+			},
+			IsError: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			end, depth, route, err := FindFarthermostNodeByBreadthFirstSearch(test.Input.graph, test.Input.startName)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected.end, end)
+			assert.Equal(t, test.Expected.depth, depth)
+			assert.Equal(t, test.Expected.route, route)
 		})
 	}
 }
