@@ -12,24 +12,31 @@ func InitPriorityQueue() *PriorityQueue {
 	return pq
 }
 
-func (pq *PriorityQueue) Push(node *Node, priority int) {
+func (pq *PriorityQueue) Push(node *Node, from *Node, priority int) {
 	item := &pqItem{
-		value:    node,
+		node:     node,
+		from:     from,
 		priority: priority,
 	}
 	heap.Push(&pq.pq, item)
 }
 
-func (pq *PriorityQueue) Pop() (node *Node, priority int) {
+// Pop 最もpriorityが低いものの情報を返す
+func (pq *PriorityQueue) Pop() (node *Node, from *Node, priority int) {
 	if pq.pq.Len() == 0 {
-		return nil, 0
+		return nil, nil, 0
 	}
 	item := heap.Pop(&pq.pq).(*pqItem)
-	return item.value, item.priority
+	return item.node, item.from, item.priority
+}
+
+func (pq *PriorityQueue) Len() int {
+	return pq.pq.Len()
 }
 
 type pqItem struct {
-	value    *Node
+	node     *Node
+	from     *Node
 	priority int
 	index    int
 }
@@ -41,7 +48,7 @@ func (pq priorityQueue) Len() int {
 }
 
 func (pq priorityQueue) Less(i, j int) bool {
-	return pq[i].priority > pq[j].priority
+	return pq[i].priority < pq[j].priority
 }
 
 func (pq priorityQueue) Swap(i, j int) {
