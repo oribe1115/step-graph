@@ -76,7 +76,7 @@ func CmdStaions() {
 			return
 		}
 
-		routes, err := stations.JustTimeRouteWithDijkstra(startName, requiredTime)
+		routes, err := stations.JustTimeRoutesByDijkstra(startName, requiredTime)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -154,7 +154,7 @@ func (s *Stations) DijkstraWithRequiredTime(startName string, targetName string)
 	return search.Dijkstra(s.Graph, startName, targetName, getCost)
 }
 
-func (s *Stations) JustTimeRouteWithDijkstra(startName string, requiredTime int) ([][]*lib.Node, error) {
+func (s *Stations) JustTimeRoutesByDijkstra(startName string, requiredTime int) ([][]*lib.Node, error) {
 	getCost := func(from *lib.Node, to *lib.Node) (int, error) {
 		cost, ok := s.EdgeCost.Get(from.ID, to.ID)
 		if !ok {
@@ -163,5 +163,5 @@ func (s *Stations) JustTimeRouteWithDijkstra(startName string, requiredTime int)
 		return cost, nil
 	}
 
-	return search.JustCostRouteWithDijkstra(s.Graph, startName, requiredTime, getCost)
+	return search.JustCostRoutesByDijkstra(s.Graph, startName, requiredTime, getCost)
 }

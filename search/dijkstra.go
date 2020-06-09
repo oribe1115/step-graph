@@ -61,7 +61,7 @@ func Dijkstra(graph *lib.Graph, startName string, targetName string, getCost fun
 	return now, tmpCost, route, nil
 }
 
-func JustCostRouteWithDijkstra(graph *lib.Graph, startName string, targetCost int, getCost func(from *lib.Node, to *lib.Node) (int, error)) (routes [][]*lib.Node, err error) {
+func JustCostRoutesByDijkstra(graph *lib.Graph, startName string, targetCost int, getCost func(from *lib.Node, to *lib.Node) (int, error)) (routes [][]*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	priorityQueue := lib.InitPriorityQueue()
 

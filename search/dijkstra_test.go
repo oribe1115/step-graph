@@ -256,7 +256,7 @@ func TestDijkstra(t *testing.T) {
 	}
 }
 
-func TestJustCostRouteWithDijkstra(t *testing.T) {
+func TestJustCostRoutesByDijkstra(t *testing.T) {
 	type input struct {
 		graph      *lib.Graph
 		startName  string
@@ -402,7 +402,7 @@ func TestJustCostRouteWithDijkstra(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Label, func(t *testing.T) {
-			got, err := JustCostRouteWithDijkstra(test.Input.graph, test.Input.startName, test.Input.targetCost, test.Input.getCost)
+			got, err := JustCostRoutesByDijkstra(test.Input.graph, test.Input.startName, test.Input.targetCost, test.Input.getCost)
 			if test.IsError {
 				assert.Error(t, err)
 				return
