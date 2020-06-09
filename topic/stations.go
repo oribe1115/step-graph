@@ -23,7 +23,7 @@ func CmdStaions() {
 	fmt.Println("Select mode with Staions")
 	fmt.Println("1. Search Route by Breadth First Search")
 	fmt.Println("2: Search Shortest Route by Dijkstra")
-	fmt.Println("3: Search Routes with Just the Time  by Dijkstra")
+	fmt.Println("3: Search Routes with Just the Time by Dijkstra")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
