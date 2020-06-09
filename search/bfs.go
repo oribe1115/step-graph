@@ -56,7 +56,7 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 	return now, nowRecord.Count, route, nil
 }
 
-func FindFarthermostNodeByBreadthFirstSearch(graph *lib.Graph, startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
+func FindFarthermostNode(graph *lib.Graph, startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	queue := lib.InitQueue()
 

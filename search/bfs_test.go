@@ -176,7 +176,7 @@ func TestBreadthFirstSearch(t *testing.T) {
 	}
 }
 
-func TestFindFarthermostNodeByBreadthFirstSearch(t *testing.T) {
+func TestFindFarthermostNode(t *testing.T) {
 	type input struct {
 		graph     *lib.Graph
 		startName string
@@ -258,7 +258,7 @@ func TestFindFarthermostNodeByBreadthFirstSearch(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Label, func(t *testing.T) {
-			end, depth, route, err := FindFarthermostNodeByBreadthFirstSearch(test.Input.graph, test.Input.startName)
+			end, depth, route, err := FindFarthermostNode(test.Input.graph, test.Input.startName)
 			if test.IsError {
 				assert.Error(t, err)
 				return

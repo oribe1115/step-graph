@@ -20,7 +20,7 @@ func CmdSns() {
 
 	fmt.Println("Select mode with SNS")
 	fmt.Println("1. Breadth First Search")
-	fmt.Println("2. Find Farthermost")
+	fmt.Println("2. Find Farthermost Nodes Pair")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
@@ -44,7 +44,7 @@ func CmdSns() {
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	case "2":
-		from, to, depth, route, err := sns.FindFarthermost()
+		from, to, depth, route, err := sns.FindFarthermostNodesPair()
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -98,28 +98,22 @@ func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *l
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
 }
 
-func (s *Sns) FindFarthermost() (from *lib.Node, to *lib.Node, depth int, route []*lib.Node, err error) {
+func (s *Sns) FindFarthermostNodesPair() (from *lib.Node, to *lib.Node, depth int, route []*lib.Node, err error) {
 	maxDepth := 0
 	var maxFrom *lib.Node
 	var maxTo *lib.Node
 	var maxRoute []*lib.Node
 
 	for _, from := range s.Graph.Nodes {
-		for _, to := range s.Graph.Nodes {
-			if from.ID == to.ID {
-				continue
-			}
-
-			_, depth, route, err := search.BreadthFirstSearch(s.Graph, from.Name, to.Name)
-			if err != nil {
-				return nil, nil, 0, nil, err
-			}
-			if depth > maxDepth {
-				maxDepth = depth
-				maxFrom = from
-				maxTo = to
-				maxRoute = route
-			}
+		end, depth, route, err := search.FindFarthermostNode(s.Graph, from.Name)
+		if err != nil {
+			return nil, nil, 0, nil, err
+		}
+		if depth > maxDepth {
+			maxDepth = depth
+			maxFrom = from
+			maxTo = end
+			maxRoute = route
 		}
 	}
 
