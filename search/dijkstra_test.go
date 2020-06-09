@@ -255,3 +255,160 @@ func TestDijkstra(t *testing.T) {
 		})
 	}
 }
+
+func TestJustCostRouteWithDijkstra(t *testing.T) {
+	type input struct {
+		graph      *lib.Graph
+		startName  string
+		targetCost int
+		getCost    func(from *lib.Node, to *lib.Node) (int, error)
+	}
+	tests := []struct {
+		Label    string
+		Input    input
+		Expected [][]*lib.Node
+		IsError  bool
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Input: input{
+				graph: &lib.Graph{
+					Nodes: map[int]*lib.Node{
+						0: {
+							ID:   0,
+							Name: "a",
+							Links: []*lib.Node{
+								{
+									ID:   1,
+									Name: "b",
+									Links: []*lib.Node{
+										{
+											ID:    3,
+											Name:  "c",
+											Links: []*lib.Node{},
+										},
+									},
+								},
+								{
+									ID:    5,
+									Name:  "d",
+									Links: []*lib.Node{},
+								},
+							},
+						},
+						1: {
+							ID:   1,
+							Name: "b",
+							Links: []*lib.Node{
+								{
+									ID:    3,
+									Name:  "c",
+									Links: []*lib.Node{},
+								},
+							},
+						},
+						3: {
+							ID:    3,
+							Name:  "c",
+							Links: []*lib.Node{},
+						},
+						5: {
+							ID:    5,
+							Name:  "d",
+							Links: []*lib.Node{},
+						},
+					},
+				},
+				startName:  "a",
+				targetCost: 5,
+				getCost: func(from *lib.Node, to *lib.Node) (int, error) {
+					return from.ID + to.ID, nil
+				},
+			},
+			Expected: [][]*lib.Node{
+				{
+					{
+						ID:   0,
+						Name: "a",
+						Links: []*lib.Node{
+							{
+								ID:   1,
+								Name: "b",
+								Links: []*lib.Node{
+									{
+										ID:    3,
+										Name:  "c",
+										Links: []*lib.Node{},
+									},
+								},
+							},
+							{
+								ID:    5,
+								Name:  "d",
+								Links: []*lib.Node{},
+							},
+						},
+					},
+					{
+						ID:    5,
+						Name:  "d",
+						Links: []*lib.Node{},
+					},
+				},
+				{
+					{
+						ID:   0,
+						Name: "a",
+						Links: []*lib.Node{
+							{
+								ID:   1,
+								Name: "b",
+								Links: []*lib.Node{
+									{
+										ID:    3,
+										Name:  "c",
+										Links: []*lib.Node{},
+									},
+								},
+							},
+							{
+								ID:    5,
+								Name:  "d",
+								Links: []*lib.Node{},
+							},
+						},
+					},
+					{
+						ID:   1,
+						Name: "b",
+						Links: []*lib.Node{
+							{
+								ID:    3,
+								Name:  "c",
+								Links: []*lib.Node{},
+							},
+						},
+					},
+					{
+						ID:    3,
+						Name:  "c",
+						Links: []*lib.Node{},
+					},
+				},
+			},
+			IsError: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got, err := JustCostRouteWithDijkstra(test.Input.graph, test.Input.startName, test.Input.targetCost, test.Input.getCost)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}
