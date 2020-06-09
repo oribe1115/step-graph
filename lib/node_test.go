@@ -124,3 +124,28 @@ func TestNodeLinkTo(t *testing.T) {
 		})
 	}
 }
+
+func TestNodeSprint(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Use      *Node
+		Expected string
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Use: &Node{
+				ID:    1,
+				Name:  "a",
+				Links: []*Node{},
+			},
+			Expected: "{1: a}",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.Sprint()
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}

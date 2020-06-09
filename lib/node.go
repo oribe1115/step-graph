@@ -21,3 +21,7 @@ func CreateNode(id int, name string) (*Node, error) {
 func (n *Node) LinkTo(to *Node) {
 	n.Links = append(n.Links, to)
 }
+
+func (n *Node) Sprint() string {
+	return fmt.Sprintf("{%d: %s}", n.ID, n.Name)
+}

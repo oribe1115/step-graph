@@ -40,10 +40,10 @@ func CmdSns() {
 			return
 		}
 
-		fmt.Printf("target: {%d: %s}, depth: %d\n", target.ID, target.Name, depth)
+		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
 		fmt.Printf("route: ")
 		for _, node := range route {
-			fmt.Printf("{%d: %s} ", node.ID, node.Name)
+			fmt.Printf("%s ", node.Sprint())
 		}
 		fmt.Printf("\n")
 		return
@@ -53,10 +53,10 @@ func CmdSns() {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf("from: {%d: %s}, to: {%d, %s}, depth: %d\n", from.ID, from.Name, to.ID, to.Name, depth)
+		fmt.Printf("from: %s, to: %s, depth: %d\n", from.Sprint(), to.Sprint(), depth)
 		fmt.Printf("route: ")
 		for _, node := range route {
-			fmt.Printf("{%d: %s} ", node.ID, node.Name)
+			fmt.Printf("%s ", node.Sprint())
 		}
 		fmt.Printf("\n")
 		return
