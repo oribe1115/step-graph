@@ -288,3 +288,193 @@ func TestGetRecord(t *testing.T) {
 		})
 	}
 }
+
+func TestSearchRecordGetRoute(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Use      *SearchRecord
+		Input    *Node
+		Expected []*Node
+		IsError  bool
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Use: &SearchRecord{
+				Records: map[int]*Record{
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+					},
+					3: {
+						Node: &Node{
+							ID:    3,
+							Name:  "c",
+							Links: []*Node{},
+						},
+						Count: 3,
+						From: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+					},
+				},
+			},
+			Input: &Node{
+				ID:    3,
+				Name:  "c",
+				Links: []*Node{},
+			},
+			Expected: []*Node{
+				{
+					ID:    1,
+					Name:  "a",
+					Links: []*Node{},
+				},
+				{
+					ID:    2,
+					Name:  "b",
+					Links: []*Node{},
+				},
+				{
+					ID:    3,
+					Name:  "c",
+					Links: []*Node{},
+				},
+			},
+			IsError: false,
+		},
+		{
+			Label: "FAIL: find infinit loop",
+			Use: &SearchRecord{
+				Records: map[int]*Record{
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+					},
+					3: {
+						Node: &Node{
+							ID:    3,
+							Name:  "c",
+							Links: []*Node{},
+						},
+						Count: 3,
+						From: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+					},
+				},
+			},
+			Input: &Node{
+				ID:    3,
+				Name:  "c",
+				Links: []*Node{},
+			},
+			Expected: nil,
+			IsError:  true,
+		},
+		{
+			Label: "FAIL: faild to find record",
+			Use: &SearchRecord{
+				Records: map[int]*Record{
+					1: {
+						Node: &Node{
+							ID:    1,
+							Name:  "a",
+							Links: []*Node{},
+						},
+						Count: 1,
+						From:  nil,
+					},
+					2: {
+						Node: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+						Count: 2,
+						From: &Node{
+							ID:    4,
+							Name:  "d",
+							Links: []*Node{},
+						},
+					},
+					3: {
+						Node: &Node{
+							ID:    3,
+							Name:  "c",
+							Links: []*Node{},
+						},
+						Count: 3,
+						From: &Node{
+							ID:    2,
+							Name:  "b",
+							Links: []*Node{},
+						},
+					},
+				},
+			},
+			Input: &Node{
+				ID:    3,
+				Name:  "c",
+				Links: []*Node{},
+			},
+			Expected: nil,
+			IsError:  true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got, err := test.Use.GetRoute(test.Input)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}
