@@ -21,6 +21,7 @@ func CmdWikipedia() {
 
 	fmt.Println("Select mode with Wikipedia")
 	fmt.Println("1. Search Route by Breadth First Search")
+	fmt.Println("2. Find Farthermost Node")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
@@ -41,6 +42,20 @@ func CmdWikipedia() {
 		}
 
 		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+		return
+	case "2":
+		fmt.Println("Input start name")
+		fmt.Printf("> ")
+		startName := lib.ReadLine()
+
+		end, depth, route, err := wikipedia.FindFathermostNode(startName)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("end: %s, depth: %d\n", end.Sprint(), depth)
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	default:
@@ -86,4 +101,13 @@ func InitWikipedia() (*Wikipedia, error) {
 
 func (w *Wikipedia) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(w.Graph, startName, targetName)
+}
+
+func (w *Wikipedia) FindFathermostNode(startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
+	startNode := w.Graph.FindNodeByName(startName)
+	if startNode == nil {
+		return nil, 0, nil, fmt.Errorf("faild to found startNode. startName=%s", startName)
+	}
+
+	return search.FindFarthermostNode(w.Graph, startName)
 }
