@@ -2,6 +2,7 @@ package topic
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/oribe1115/step-graph/lib"
 	"github.com/oribe1115/step-graph/search"
@@ -20,8 +21,9 @@ func CmdStaions() {
 	}
 
 	fmt.Println("Select mode with Staions")
-	fmt.Println("1. Search Route With Breadth First Search")
-	fmt.Println("2: Search Shortest Route With Dijkstra")
+	fmt.Println("1. Search Route by Breadth First Search")
+	fmt.Println("2: Search Shortest Route by Dijkstra")
+	fmt.Println("3: Search Routes with Just the Time  by Dijkstra")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
@@ -60,6 +62,34 @@ func CmdStaions() {
 
 		fmt.Printf("traget: %s, requiredTime: %d min\n", target.Sprint(), requiredTime)
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+	case "3":
+		fmt.Println("Input start name")
+		fmt.Printf("> ")
+		startName := lib.ReadLine()
+
+		fmt.Println("Input required time")
+		fmt.Printf("> ")
+		requiredTimeStr := lib.ReadLine()
+		requiredTime, err := strconv.Atoi(requiredTimeStr)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		routes, err := stations.JustTimeRouteWithDijkstra(startName, requiredTime)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if len(routes) == 0 {
+			fmt.Println("Not found such route")
+			return
+		}
+
+		for _, route := range routes {
+			fmt.Println(lib.SprintNodeListAsRoute(route))
+		}
+		return
 	default:
 		fmt.Println("Invalid input")
 	}
@@ -122,4 +152,16 @@ func (s *Stations) DijkstraWithRequiredTime(startName string, targetName string)
 		return cost, nil
 	}
 	return search.Dijkstra(s.Graph, startName, targetName, getCost)
+}
+
+func (s *Stations) JustTimeRouteWithDijkstra(startName string, requiredTime int) ([][]*lib.Node, error) {
+	getCost := func(from *lib.Node, to *lib.Node) (int, error) {
+		cost, ok := s.EdgeCost.Get(from.ID, to.ID)
+		if !ok {
+			return 0, fmt.Errorf("faild to get cost. fromID=%d toID=%d", from.ID, to.ID)
+		}
+		return cost, nil
+	}
+
+	return search.JustCostRouteWithDijkstra(s.Graph, startName, requiredTime, getCost)
 }
