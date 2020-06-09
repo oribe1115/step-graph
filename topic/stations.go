@@ -20,7 +20,8 @@ func CmdStaions() {
 	}
 
 	fmt.Println("Select mode with Staions")
-	fmt.Println("1. Breadth First Search")
+	fmt.Println("1. Search Route With Breadth First Search")
+	fmt.Println("2: Search Shortest Route With Dijkstra")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
@@ -41,6 +42,23 @@ func CmdStaions() {
 		}
 
 		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+	case "2":
+		fmt.Println("Input start name")
+		fmt.Printf("> ")
+		startName := lib.ReadLine()
+
+		fmt.Println("Input target name")
+		fmt.Printf("> ")
+		targetName := lib.ReadLine()
+
+		target, requiredTime, route, err := stations.DijkstraWithRequiredTime(startName, targetName)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("traget: %s, requiredTime: %d min\n", target.Sprint(), requiredTime)
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 	default:
 		fmt.Println("Invalid input")
@@ -93,4 +111,15 @@ func InitStations() (*Stations, error) {
 
 func (s *Stations) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
+}
+
+func (s *Stations) DijkstraWithRequiredTime(startName string, targetName string) (target *lib.Node, totalCost int, route []*lib.Node, err error) {
+	getCost := func(from *lib.Node, to *lib.Node) (int, error) {
+		cost, ok := s.EdgeCost.Get(from.ID, to.ID)
+		if !ok {
+			return 0, fmt.Errorf("faild to get cost. fromID=%d toID=%d", from.ID, to.ID)
+		}
+		return cost, nil
+	}
+	return search.Dijkstra(s.Graph, startName, targetName, getCost)
 }
