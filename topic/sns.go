@@ -41,11 +41,7 @@ func CmdSns() {
 		}
 
 		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
-		fmt.Printf("route: ")
-		for _, node := range route {
-			fmt.Printf("%s ", node.Sprint())
-		}
-		fmt.Printf("\n")
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	case "2":
 		from, to, depth, route, err := sns.FindFarthermost()
@@ -54,11 +50,7 @@ func CmdSns() {
 			return
 		}
 		fmt.Printf("from: %s, to: %s, depth: %d\n", from.Sprint(), to.Sprint(), depth)
-		fmt.Printf("route: ")
-		for _, node := range route {
-			fmt.Printf("%s ", node.Sprint())
-		}
-		fmt.Printf("\n")
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	default:
 		fmt.Println("Invalid input")
