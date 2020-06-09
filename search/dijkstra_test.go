@@ -11,7 +11,7 @@ func TestDijkstra(t *testing.T) {
 	type input struct {
 		graph      *lib.Graph
 		startName  string
-		tragetName string
+		targetName string
 		getCost    func(from *lib.Node, to *lib.Node) (int, error)
 	}
 	type expected struct {
@@ -122,7 +122,7 @@ func TestDijkstra(t *testing.T) {
 					},
 				},
 				startName:  "a",
-				tragetName: "e",
+				targetName: "e",
 				getCost: func(from *lib.Node, to *lib.Node) (int, error) {
 					return from.ID + to.ID, nil
 				},
@@ -200,11 +200,49 @@ func TestDijkstra(t *testing.T) {
 			},
 			IsError: false,
 		},
+		{
+			Label: "FAIL: firstNode not found",
+			Input: input{
+				graph: &lib.Graph{
+					Nodes: map[int]*lib.Node{
+						0: {ID: 0, Name: "a", Links: []*lib.Node{}},
+					},
+				},
+				startName:  "b",
+				targetName: "a",
+				getCost:    nil,
+			},
+			Expected: expected{
+				target:    nil,
+				totalCost: 0,
+				route:     nil,
+			},
+			IsError: true,
+		},
+		{
+			Label: "FAIL: targetNode not found",
+			Input: input{
+				graph: &lib.Graph{
+					Nodes: map[int]*lib.Node{
+						0: {ID: 0, Name: "a", Links: []*lib.Node{}},
+					},
+				},
+				startName:  "a",
+				targetName: "b",
+				getCost:    nil,
+			},
+			Expected: expected{
+				target:    nil,
+				totalCost: 0,
+				route:     nil,
+			},
+			IsError: true,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Label, func(t *testing.T) {
-			target, totalCost, route, err := Dijkstra(test.Input.graph, test.Input.startName, test.Input.tragetName, test.Input.getCost)
+			target, totalCost, route, err := Dijkstra(test.Input.graph, test.Input.startName, test.Input.targetName, test.Input.getCost)
 			if test.IsError {
 				assert.Error(t, err)
 				return

@@ -136,7 +136,7 @@ func TestBreadthFirstSearch(t *testing.T) {
 			IsError: false,
 		},
 		{
-			Label: "SUCCESS: not found",
+			Label: "SUCCESS: faild to found targetNode",
 			Input: input{
 				graph:      inputGraph,
 				startName:  "a",
@@ -145,7 +145,7 @@ func TestBreadthFirstSearch(t *testing.T) {
 			ExpectedTraget: nil,
 			ExpectedDepth:  0,
 			ExpectedRoute:  nil,
-			IsError:        false,
+			IsError:        true,
 		},
 		{
 			Label: "FAIL: faild to found startNode",

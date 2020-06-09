@@ -15,23 +15,27 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 		return nil, 0, nil, fmt.Errorf("faild to found startNode. startName=%s", startName)
 	}
 
+	targetNode := graph.FindNodeByName(targetName)
+	if targetNode == nil {
+		return nil, 0, nil, fmt.Errorf("faild to found targetNode. targetName=%s", targetName)
+	}
+
 	searchRecord.AddRecord(startNode, 0, nil)
 	queue.Enqueue(startNode)
 
+	now := &lib.Node{}
+	nowRecord := &lib.Record{}
+
 	for queue.Len() != 0 {
-		now, err := queue.Dequeue()
+		now, err = queue.Dequeue()
 		if err != nil {
 			return nil, 0, nil, err
 		}
 
-		nowRecord := searchRecord.GetRecord(now.ID)
+		nowRecord = searchRecord.GetRecord(now.ID)
 
 		if now.Name == targetName {
-			route, err := searchRecord.GetRoute(now)
-			if err != nil {
-				return now, nowRecord.Count, nil, err
-			}
-			return now, nowRecord.Count, route, nil
+			break
 		}
 
 		for _, node := range now.Links {
@@ -44,5 +48,10 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 		}
 	}
 
-	return nil, 0, nil, nil
+	route, err = searchRecord.GetRoute(now)
+	if err != nil {
+		return now, nowRecord.Count, nil, err
+	}
+
+	return now, nowRecord.Count, route, nil
 }

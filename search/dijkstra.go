@@ -15,17 +15,21 @@ func Dijkstra(graph *lib.Graph, startName string, targetName string, getCost fun
 		return nil, 0, nil, fmt.Errorf("faild to found startNode. startName=%s", startName)
 	}
 
+	targetNode := graph.FindNodeByName(targetName)
+	if targetNode == nil {
+		return nil, 0, nil, fmt.Errorf("faild to found targetNode. targetName=%s", targetName)
+	}
+
 	priorityQueue.Push(startNode, nil, 0)
 
+	now := &lib.Node{}
+	from := &lib.Node{}
+	tmpCost := 0
+
 	for priorityQueue.Len() != 0 {
-		now, from, tmpCost := priorityQueue.Pop()
+		now, from, tmpCost = priorityQueue.Pop()
 		if now.Name == targetName {
-			searchRecord.AddRecord(now, tmpCost, from)
-			route, err := searchRecord.GetRoute(now)
-			if err != nil {
-				return now, tmpCost, nil, err
-			}
-			return now, tmpCost, route, nil
+			break
 		}
 
 		// 最小コストが記録済みかどうか
@@ -48,5 +52,11 @@ func Dijkstra(graph *lib.Graph, startName string, targetName string, getCost fun
 		}
 	}
 
-	return nil, 0, nil, nil
+	searchRecord.AddRecord(now, tmpCost, from)
+	route, err = searchRecord.GetRoute(now)
+	if err != nil {
+		return now, tmpCost, nil, err
+	}
+
+	return now, tmpCost, route, nil
 }
