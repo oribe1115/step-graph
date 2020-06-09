@@ -16,6 +16,12 @@ type LinkData struct {
 	SecondID int
 }
 
+type EdgeCostData struct {
+	FirstID  int
+	SecondID int
+	Cost     int
+}
+
 func ReadNodeData(filename string) ([]NodeData, error) {
 	data, err := readData(filename)
 	if err != nil {
@@ -60,6 +66,41 @@ func ReadLinkData(filename string) ([]LinkData, error) {
 	}
 
 	return linkDataList, nil
+}
+
+func ReadEdgeCostData(filename string) ([]EdgeCostData, error) {
+	data, err := readData(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	edgeCostDataList := make([]EdgeCostData, 0)
+
+	for _, d := range data {
+		if d == "" {
+			continue
+		}
+		tmp := strings.Split(d, "\t")
+
+		firstID, err := strconv.Atoi(tmp[0])
+		if err != nil {
+			return edgeCostDataList, err
+		}
+
+		secondID, err := strconv.Atoi(tmp[1])
+		if err != nil {
+			return edgeCostDataList, err
+		}
+
+		cost, err := strconv.Atoi(tmp[2])
+		if err != nil {
+			return edgeCostDataList, err
+		}
+
+		edgeCostDataList = append(edgeCostDataList, EdgeCostData{firstID, secondID, cost})
+	}
+
+	return edgeCostDataList, nil
 }
 
 func readData(filename string) ([]string, error) {
