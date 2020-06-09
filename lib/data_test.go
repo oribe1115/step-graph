@@ -67,3 +67,35 @@ func TestReadLinkData(t *testing.T) {
 		})
 	}
 }
+
+func TestReadEdgeCostData(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Input    string
+		Expected []EdgeCostData
+		IsError  bool
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Input: "./testdata/edgeCosts.txt",
+			Expected: []EdgeCostData{
+				{0, 1, 2},
+				{1, 2, 2},
+				{2, 3, 3},
+			},
+			IsError: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got, err := ReadEdgeCostData(test.Input)
+			if test.IsError {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}

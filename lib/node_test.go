@@ -124,3 +124,60 @@ func TestNodeLinkTo(t *testing.T) {
 		})
 	}
 }
+
+func TestNodeSprint(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Use      *Node
+		Expected string
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Use: &Node{
+				ID:    1,
+				Name:  "a",
+				Links: []*Node{},
+			},
+			Expected: "{1: a}",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got := test.Use.Sprint()
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}
+
+func TestSprintNodeListAsRoute(t *testing.T) {
+	tests := []struct {
+		Label    string
+		Input    []*Node
+		Expected string
+	}{
+		{
+			Label: "SUCCESS: normal",
+			Input: []*Node{
+				{
+					ID:    1,
+					Name:  "a",
+					Links: []*Node{},
+				},
+				{
+					ID:    2,
+					Name:  "b",
+					Links: []*Node{},
+				},
+			},
+			Expected: "{1: a} -> {2: b}",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Label, func(t *testing.T) {
+			got := SprintNodeListAsRoute(test.Input)
+			assert.Equal(t, test.Expected, got)
+		})
+	}
+}

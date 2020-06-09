@@ -34,21 +34,23 @@ func CmdSns() {
 		fmt.Printf("> ")
 		targetName := lib.ReadLine()
 
-		target, depth, err := sns.BreadthFirstSearch(startName, targetName)
+		target, depth, route, err := sns.BreadthFirstSearch(startName, targetName)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Printf("target: {%d: %s}, depth: %d\n", target.ID, target.Name, depth)
+		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	case "2":
-		from, to, depth, err := sns.FindFarthermost()
+		from, to, depth, route, err := sns.FindFarthermost()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf("from: {%d: %s}, to: {%d, %s}, depth: %d\n", from.ID, from.Name, to.ID, to.Name, depth)
+		fmt.Printf("from: %s, to: %s, depth: %d\n", from.Sprint(), to.Sprint(), depth)
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	default:
 		fmt.Println("Invalid input")
@@ -92,14 +94,15 @@ func InitSns() (*Sns, error) {
 	return sns, nil
 }
 
-func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, err error) {
+func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
 }
 
-func (s *Sns) FindFarthermost() (from *lib.Node, to *lib.Node, depth int, err error) {
+func (s *Sns) FindFarthermost() (from *lib.Node, to *lib.Node, depth int, route []*lib.Node, err error) {
 	maxDepth := 0
 	var maxFrom *lib.Node
 	var maxTo *lib.Node
+	var maxRoute []*lib.Node
 
 	for _, from := range s.Graph.Nodes {
 		for _, to := range s.Graph.Nodes {
@@ -107,17 +110,18 @@ func (s *Sns) FindFarthermost() (from *lib.Node, to *lib.Node, depth int, err er
 				continue
 			}
 
-			_, depth, err := search.BreadthFirstSearch(s.Graph, from.Name, to.Name)
+			_, depth, route, err := search.BreadthFirstSearch(s.Graph, from.Name, to.Name)
 			if err != nil {
-				return nil, nil, 0, err
+				return nil, nil, 0, nil, err
 			}
 			if depth > maxDepth {
 				maxDepth = depth
 				maxFrom = from
 				maxTo = to
+				maxRoute = route
 			}
 		}
 	}
 
-	return maxFrom, maxTo, maxDepth, nil
+	return maxFrom, maxTo, maxDepth, maxRoute, nil
 }
