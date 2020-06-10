@@ -7,10 +7,12 @@ import (
 	"github.com/oribe1115/step-graph/search"
 )
 
+// Wikipedia .
 type Wikipedia struct {
 	Graph *lib.Graph
 }
 
+// CmdWikipedia Wikipediaの関数をCLIで実行する
 func CmdWikipedia() {
 	fmt.Println("Loading Wikipedia data...")
 	wikipedia, err := InitWikipedia()
@@ -63,6 +65,7 @@ func CmdWikipedia() {
 	}
 }
 
+// InitWikipedia Wikipediaを初期化して返す
 func InitWikipedia() (*Wikipedia, error) {
 	wikipedia := &Wikipedia{}
 	wikipedia.Graph = lib.InitGraph()
@@ -99,10 +102,12 @@ func InitWikipedia() (*Wikipedia, error) {
 	return wikipedia, nil
 }
 
+// BreadthFirstSearch startNameからtargetNameまでの最短経路を探索
 func (w *Wikipedia) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(w.Graph, startName, targetName)
 }
 
+// FindFathermostNode startName最も離れた記事を探索
 func (w *Wikipedia) FindFathermostNode(startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
 	startNode := w.Graph.FindNodeByName(startName)
 	if startNode == nil {

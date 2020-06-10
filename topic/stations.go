@@ -8,11 +8,13 @@ import (
 	"github.com/oribe1115/step-graph/search"
 )
 
+// Stations .
 type Stations struct {
 	Graph    *lib.Graph
 	EdgeCost *lib.EdgeCost
 }
 
+// CmdStaions Staionsの関数をCLIで実行する
 func CmdStaions() {
 	stations, err := InitStations()
 	if err != nil {
@@ -45,6 +47,7 @@ func CmdStaions() {
 
 		fmt.Printf("target: %s, depth: %d\n", target.Sprint(), depth)
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+		return
 	case "2":
 		fmt.Println("Input start name")
 		fmt.Printf("> ")
@@ -62,6 +65,7 @@ func CmdStaions() {
 
 		fmt.Printf("traget: %s, requiredTime: %d min\n", target.Sprint(), requiredTime)
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+		return
 	case "3":
 		fmt.Println("Input start name")
 		fmt.Printf("> ")
@@ -95,6 +99,7 @@ func CmdStaions() {
 	}
 }
 
+// InitStations Stationsを初期化して返す
 func InitStations() (*Stations, error) {
 	stations := &Stations{}
 	stations.Graph = lib.InitGraph()
@@ -139,10 +144,12 @@ func InitStations() (*Stations, error) {
 	return stations, nil
 }
 
+// BreadthFirstSearch startNameからtargetNameまでの最短経路を探索
 func (s *Stations) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
 }
 
+// DijkstraWithRequiredTime startNameからtargetNameまで最短の時間でで行くルートを探索
 func (s *Stations) DijkstraWithRequiredTime(startName string, targetName string) (target *lib.Node, totalCost int, route []*lib.Node, err error) {
 	getCost := func(from *lib.Node, to *lib.Node) (int, error) {
 		cost, ok := s.EdgeCost.Get(from.ID, to.ID)
@@ -154,6 +161,7 @@ func (s *Stations) DijkstraWithRequiredTime(startName string, targetName string)
 	return search.Dijkstra(s.Graph, startName, targetName, getCost)
 }
 
+// JustTimeRoutesByDijkstra startNameからrequiredTimeちょうどでたどり着ける駅を探索
 func (s *Stations) JustTimeRoutesByDijkstra(startName string, requiredTime int) ([][]*lib.Node, error) {
 	getCost := func(from *lib.Node, to *lib.Node) (int, error) {
 		cost, ok := s.EdgeCost.Get(from.ID, to.ID)

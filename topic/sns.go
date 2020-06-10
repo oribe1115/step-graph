@@ -7,10 +7,12 @@ import (
 	"github.com/oribe1115/step-graph/search"
 )
 
+// Sns .
 type Sns struct {
 	Graph *lib.Graph
 }
 
+// CmdSns Snsの関数をCLIで実行する
 func CmdSns() {
 	sns, err := InitSns()
 	if err != nil {
@@ -58,6 +60,7 @@ func CmdSns() {
 
 }
 
+// InitSns Snsを初期化して返す
 func InitSns() (*Sns, error) {
 	sns := &Sns{}
 	sns.Graph = lib.InitGraph()
@@ -94,10 +97,12 @@ func InitSns() (*Sns, error) {
 	return sns, nil
 }
 
+// BreadthFirstSearch startNameからtargetNameまでの最短経路を探索
 func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
 }
 
+// FindFarthermostNodesPair 最も離れたユーザーの組を探索
 func (s *Sns) FindFarthermostNodesPair() (from *lib.Node, to *lib.Node, depth int, route []*lib.Node, err error) {
 	maxDepth := 0
 	var maxFrom *lib.Node
