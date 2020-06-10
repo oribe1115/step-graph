@@ -19,7 +19,7 @@ func CmdSns() {
 	}
 
 	fmt.Println("Select mode with SNS")
-	fmt.Println("1. Breadth First Search")
+	fmt.Println("1. Search Route by Breadth First Search")
 	fmt.Println("2. Find Farthermost Nodes Pair")
 	fmt.Printf("> ")
 	input := lib.ReadLine()

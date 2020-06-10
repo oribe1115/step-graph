@@ -12,7 +12,7 @@ type Wikipedia struct {
 }
 
 func CmdWikipedia() {
-	fmt.Println("Initializing Wikipedia data...")
+	fmt.Println("Loading Wikipedia data...")
 	wikipedia, err := InitWikipedia()
 	if err != nil {
 		fmt.Println(err)
