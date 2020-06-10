@@ -107,7 +107,7 @@ func (w *Wikipedia) BreadthFirstSearch(startName string, targetName string) (tar
 	return search.BreadthFirstSearch(w.Graph, startName, targetName)
 }
 
-// FindFathermostNode startName最も離れた記事を探索
+// FindFathermostNode startNameから最も離れた記事を探索
 func (w *Wikipedia) FindFathermostNode(startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
 	startNode := w.Graph.FindNodeByName(startName)
 	if startNode == nil {

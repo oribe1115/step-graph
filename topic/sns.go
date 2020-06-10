@@ -22,7 +22,8 @@ func CmdSns() {
 
 	fmt.Println("Select mode with SNS")
 	fmt.Println("1. Search Route by Breadth First Search")
-	fmt.Println("2. Find Farthermost Nodes Pair")
+	fmt.Println("2. Find Farthermost Node")
+	fmt.Println("3. Find Farthermost Nodes Pair")
 	fmt.Printf("> ")
 	input := lib.ReadLine()
 
@@ -46,6 +47,20 @@ func CmdSns() {
 		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
 		return
 	case "2":
+		fmt.Println("Input start name")
+		fmt.Printf("> ")
+		startName := lib.ReadLine()
+
+		end, depth, route, err := sns.FindFathermostNode(startName)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("end: %s, depth: %d\n", end.Sprint(), depth)
+		fmt.Printf("route: %s\n", lib.SprintNodeListAsRoute(route))
+		return
+	case "3":
 		from, to, depth, route, err := sns.FindFarthermostNodesPair()
 		if err != nil {
 			fmt.Println(err)
@@ -100,6 +115,16 @@ func InitSns() (*Sns, error) {
 // BreadthFirstSearch startNameからtargetNameまでの最短経路を探索
 func (s *Sns) BreadthFirstSearch(startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	return search.BreadthFirstSearch(s.Graph, startName, targetName)
+}
+
+// FindFathermostNode startNameから最も離れた記事を探索
+func (s *Sns) FindFathermostNode(startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
+	startNode := s.Graph.FindNodeByName(startName)
+	if startNode == nil {
+		return nil, 0, nil, fmt.Errorf("faild to found startNode. startName=%s", startName)
+	}
+
+	return search.FindFarthermostNode(s.Graph, startName)
 }
 
 // FindFarthermostNodesPair 最も離れたユーザーの組を探索
