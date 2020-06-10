@@ -2,16 +2,20 @@ package lib
 
 import "container/heap"
 
+// PriorityQueue 優先度付きキュー
+// heapパッケージを使って実装したpriorityQueueをラップしたもの
 type PriorityQueue struct {
 	pq priorityQueue
 }
 
+// InitPriorityQueue 初期化したPriorityQueueを返す
 func InitPriorityQueue() *PriorityQueue {
 	pq := &PriorityQueue{}
 	heap.Init(&pq.pq)
 	return pq
 }
 
+// Push PriorityQueueにpushする
 func (pq *PriorityQueue) Push(node *Node, from *Node, priority int) {
 	item := &pqItem{
 		node:     node,
@@ -21,7 +25,8 @@ func (pq *PriorityQueue) Push(node *Node, from *Node, priority int) {
 	heap.Push(&pq.pq, item)
 }
 
-// Pop 最もpriorityが低いものの情報を返す
+// Pop PriorityQueueから最もpriorityが低いものの情報を返す
+// 本来の優先度付きキューの仕様とは逆
 func (pq *PriorityQueue) Pop() (node *Node, from *Node, priority int) {
 	if pq.pq.Len() == 0 {
 		return nil, nil, 0
@@ -30,6 +35,7 @@ func (pq *PriorityQueue) Pop() (node *Node, from *Node, priority int) {
 	return item.node, item.from, item.priority
 }
 
+// Len PriorityQueueの長さを返す
 func (pq *PriorityQueue) Len() int {
 	return pq.pq.Len()
 }

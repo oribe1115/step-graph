@@ -6,22 +6,26 @@ import (
 	"strings"
 )
 
+// NodeData ファイルから読み取ったノードの情報
 type NodeData struct {
 	ID   int
 	Name string
 }
 
+// LinkData ファイルから読み取ったリンクの情報
 type LinkData struct {
 	FirstID  int
 	SecondID int
 }
 
+// EdgeCostData ファイルから読み取った辺のコスト情報
 type EdgeCostData struct {
 	FirstID  int
 	SecondID int
 	Cost     int
 }
 
+// ReadNodeData 指定したファイルからノードの情報を読み取って返す
 func ReadNodeData(filename string) ([]NodeData, error) {
 	data, err := readData(filename)
 	if err != nil {
@@ -43,6 +47,7 @@ func ReadNodeData(filename string) ([]NodeData, error) {
 	return nodeDataList, nil
 }
 
+// ReadLinkData 指定したファイルからリンクの情報を読み取って返す
 func ReadLinkData(filename string) ([]LinkData, error) {
 	data, err := readData(filename)
 	if err != nil {
@@ -68,6 +73,7 @@ func ReadLinkData(filename string) ([]LinkData, error) {
 	return linkDataList, nil
 }
 
+// ReadEdgeCostData 指定したファイルから辺のコスト情報を読み取って返す
 func ReadEdgeCostData(filename string) ([]EdgeCostData, error) {
 	data, err := readData(filename)
 	if err != nil {

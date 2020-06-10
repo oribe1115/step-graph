@@ -1,10 +1,12 @@
 package lib
 
+// EdgeCost 辺のコスト情報を保持する
 type EdgeCost struct {
 	Costs      map[int]map[int]int
 	IsDirected bool // 有向グラフかどうか
 }
 
+// InitEdgeCost 初期化したEdgeCostを返す
 func InitEdgeCost(isDirected bool) *EdgeCost {
 	return &EdgeCost{
 		Costs:      map[int]map[int]int{},
@@ -12,6 +14,7 @@ func InitEdgeCost(isDirected bool) *EdgeCost {
 	}
 }
 
+// Set EdgeCostに辺のコスト情報を記録する
 func (e *EdgeCost) Set(firstID int, secondID int, cost int) {
 	firstID, secondID = e.checkIDOrder(firstID, secondID)
 
@@ -24,6 +27,7 @@ func (e *EdgeCost) Set(firstID int, secondID int, cost int) {
 	secondMap[secondID] = cost
 }
 
+// Get EdgeCostからコスト情報を取り出す
 func (e *EdgeCost) Get(firstID int, secondID int) (cost int, ok bool) {
 	firstID, secondID = e.checkIDOrder(firstID, secondID)
 	secondMap, ok := e.Costs[firstID]
