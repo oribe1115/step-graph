@@ -6,6 +6,8 @@ import (
 	"github.com/oribe1115/step-graph/lib"
 )
 
+// Dijkstra startNameからtargetNameまで最小コストで行くルートを探索
+// getCostはコストを求める関数
 func Dijkstra(graph *lib.Graph, startName string, targetName string, getCost func(from *lib.Node, to *lib.Node) (int, error)) (target *lib.Node, totalCost int, route []*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	priorityQueue := lib.InitPriorityQueue()
@@ -61,6 +63,8 @@ func Dijkstra(graph *lib.Graph, startName string, targetName string, getCost fun
 	return now, tmpCost, route, nil
 }
 
+// JustCostRoutesByDijkstra startNameからちょうどtargetCostでたどり着けるノードを探索する
+// getCostはコストを求める関数
 func JustCostRoutesByDijkstra(graph *lib.Graph, startName string, targetCost int, getCost func(from *lib.Node, to *lib.Node) (int, error)) (routes [][]*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	priorityQueue := lib.InitPriorityQueue()

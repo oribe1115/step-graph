@@ -6,6 +6,7 @@ import (
 	"github.com/oribe1115/step-graph/lib"
 )
 
+// BreadthFirstSearch startNameからtargetNameまでの最短経路を探索
 func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (target *lib.Node, depth int, route []*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	queue := lib.InitQueue()
@@ -56,6 +57,7 @@ func BreadthFirstSearch(graph *lib.Graph, startName string, targetName string) (
 	return now, nowRecord.Count, route, nil
 }
 
+// FindFarthermostNode graph内でstartNameのノードから最も遠いノードを探索
 func FindFarthermostNode(graph *lib.Graph, startName string) (end *lib.Node, depth int, route []*lib.Node, err error) {
 	searchRecord := lib.InitSearchRecord()
 	queue := lib.InitQueue()
